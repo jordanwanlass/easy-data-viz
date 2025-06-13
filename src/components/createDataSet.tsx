@@ -11,27 +11,35 @@ import {
 } from "./ui/table";
 
 export default function CreateDataSet() {
-  const [file, setFile] = useState<any>(null);
-  const [dataSet, setDataSet] = useState<any[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [dataSetMap, setDataSetMap] = useState<Map<string, (string | number)[]>>(new Map<string, (string | number)[]>());
 
   const handFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputedFile = event.target.files?.[0];
 
     if (inputedFile) {
-      console.log(inputedFile.webkitRelativePath);
       parse.parse(inputedFile, {
-        step: function (result) {
-          dataSet.push(result.data);
-        },
-        complete: function (results, file) {
-          console.log("complete");
-          setFile(file);
+        header: true,
+        complete: function (results: parse.ParseResult<Record<string, string>>) {
+          if (results.data.length > 0) {
+            const headers = Object.keys(results.data[0]);
+            const newDataSetMap = new Map<string, (string | number)[]>();
+            
+            headers.forEach(header => {
+              newDataSetMap.set(header, results.data.map(row => row[header] || ''));
+            });
+            setDataSetMap(newDataSetMap);
+            setFile(inputedFile);
+          }
         },
       });
     } else {
       console.log("No file selected");
     }
   };
+
+  const headers = [...dataSetMap.keys()];
+  const rowCount = dataSetMap.size > 0 ? dataSetMap.values().next().value.length : 0;
 
   return (
     <div className={`h-full grid ${file ? "py-4 px-4" : "items-center justify-center"}`}>
@@ -41,16 +49,18 @@ export default function CreateDataSet() {
           <Table>
             <TableHeader>
               <TableRow>
-                {dataSet[0].map((header: string, index: number) => (
-                  <TableHead key={index}>{header}</TableHead>
+                {headers.map((header: string, index: number) => (
+                  <TableHead key={`header-${header}-${index}`}>{header}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dataSet.slice(1).map((row, index) => (
-                <TableRow>
-                  {row.map((cell: any, cellIndex: number) => (
-                    <TableCell key={cellIndex}>{cell}</TableCell>
+              {[...Array(rowCount)].map((_, rowIndex: number) => (
+                <TableRow key={`row-${rowIndex}`}>
+                  {headers.map((header: string, cellIndex: number) => (
+                    <TableCell key={`cell-${rowIndex}-${cellIndex}-${header}`}>
+                      {dataSetMap.get(header)?.[rowIndex] || ''}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))}

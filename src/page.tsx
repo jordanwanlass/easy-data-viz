@@ -40,6 +40,7 @@ export default function Page() {
               <Link
                 className="flex h-12 items-center gap-2 rounded-sm px-1 py-0.5 hover:bg-gray-300"
                 to={link.to}
+                key={link.to}
               >
                 <div>{link.icon} </div>
                 <div>{link.name}</div>
@@ -49,6 +50,7 @@ export default function Page() {
         </div>
         <div className="col-span-3 border rounded-2xl shadow-xl/20 overflow-scroll" style={{ maxHeight: "95vh" }}>
           <Routes>
+            <Route path="/" element={<CreateDataSet />} />
             <Route path="/createDataSet" element={<CreateDataSet />} />
             <Route path="/analyzeDataSet" element={<AnalyzeDataSet />} />
             <Route path="/dataSets" element={<DataSets />} />
