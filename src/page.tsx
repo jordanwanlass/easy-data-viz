@@ -20,19 +20,21 @@ const links = [
     to: "/dataSets",
     icon: <List className="h-4 w-4" />,
   },
-
 ];
 
 export default function Page() {
   return (
-    <div className="grid grid-cols-4 px-4 py-4 m-0" style={{ minHeight: "100vh"}}>
+    <div
+      className="grid grid-cols-4 px-4 py-4 m-0"
+      style={{ minHeight: "100vh" }}
+    >
       <HashRouter>
         <div className="flex flex-col mr-4">
           <div className="mb-10 flex items-center gap-2 px-1 italic font-semibold">
             <SquareStack className="h-4 w-4" />
             Easy Data Viz
           </div>
-          
+
           {links.map((link) => {
             return (
               <Link
@@ -45,12 +47,12 @@ export default function Page() {
             );
           })}
         </div>
-        <div className="col-span-3 border rounded-2xl shadow-xl">
-        <Routes>
-          <Route path="/createDataSet" element={<CreateDataSet />} />
-          <Route path="/analyzeDataSet" element={<AnalyzeDataSet />} />
-          <Route path="/dataSets" element={<DataSets />} />
-        </Routes>
+        <div className="col-span-3 border rounded-2xl shadow-xl/20 overflow-scroll" style={{ maxHeight: "95vh" }}>
+          <Routes>
+            <Route path="/createDataSet" element={<CreateDataSet />} />
+            <Route path="/analyzeDataSet" element={<AnalyzeDataSet />} />
+            <Route path="/dataSets" element={<DataSets />} />
+          </Routes>
         </div>
       </HashRouter>
     </div>
