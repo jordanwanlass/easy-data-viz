@@ -3,14 +3,16 @@ import { Input } from "./ui/input";
 import parse from "papaparse";
 import AddDataDialog from "./addDataDialog";
 import DataSetTable from "./DataSetTable";
+import { getDataFieldtypes } from "../lib/helpers";
 
 export default function CreateDataSet() {
   const [file, setFile] = useState<File | null>(null);
   const [dataSetMap, setDataSetMap] = useState<
-    Map<string, (string | number)[]>
-  >(new Map<string, (string | number)[]>());
+    Map<string, string[]>
+  >(new Map<string, string[]>());
+  const [dataFieldTypes, setDataFieldTypes] = useState<Map<string, string>>(new Map<string, string>())
 
-  const handFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputedFile = event.target.files?.[0];
 
     if (inputedFile) {
@@ -21,7 +23,7 @@ export default function CreateDataSet() {
         ) {
           if (results.data.length > 0) {
             const headers = Object.keys(results.data[0]);
-            const newDataSetMap = new Map<string, (string | number)[]>();
+            const newDataSetMap = new Map<string, string[]>();
 
             headers.forEach((header) => {
               newDataSetMap.set(
@@ -29,6 +31,7 @@ export default function CreateDataSet() {
                 results.data.map((row) => row[header] || "")
               );
             });
+            setDataFieldTypes(getDataFieldtypes(newDataSetMap));
             setDataSetMap(newDataSetMap);
             setFile(inputedFile);
           }
@@ -48,7 +51,7 @@ export default function CreateDataSet() {
       {file ? (
         <div>
           <div className="flex mb-8 items-center">
-            <AddDataDialog/>
+            <AddDataDialog dataFieldTypes={dataFieldTypes}/>
           </div>
           <DataSetTable dataSetMap={dataSetMap}/>
         </div>

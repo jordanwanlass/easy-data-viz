@@ -5,9 +5,17 @@ import {
   DialogHeader,
   DialogTrigger,
   DialogContent,
+  DialogTitle,
+  DialogDescription,
 } from "./ui/dialog";
 
-export default function AddDataDialog() {
+import NewDataFieldForm from "./newDataFieldForm";
+
+export default function AddDataDialog(props: {
+  dataFieldTypes: Map<string, string>;
+}) {
+  const { dataFieldTypes } = props;
+
   return (
     <Dialog>
       <Button asChild>
@@ -17,7 +25,16 @@ export default function AddDataDialog() {
         </DialogTrigger>
       </Button>
       <DialogContent>
-        <DialogHeader>Combine fields to create new data.</DialogHeader>
+        <DialogHeader>
+          <DialogTitle>Add Data</DialogTitle>
+          <DialogDescription>
+            Choose 2 fields of the same type and how you want to combine them to
+            create a new data field.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex gap-2">
+          <NewDataFieldForm dataFieldTypes={dataFieldTypes} />
+        </div>
       </DialogContent>
     </Dialog>
   );
