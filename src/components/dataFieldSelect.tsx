@@ -9,12 +9,11 @@ import {
 
 export default function DataFieldSelect(props: {
   dataFields: string[];
-  handleChange: (value: string) => void;
 }) {
-  const { dataFields, handleChange } = props;
+  const { dataFields } = props;
 
   return (
-    <Select onValueChange={handleChange}>
+    <Select>
       <SelectTrigger className="w-[135]">
         <SelectValue placeholder="Select a field" />
       </SelectTrigger>
