@@ -1,7 +1,16 @@
-export enum DataFieldType {
+enum DataFieldType {
     TEXT = "text",
     NUMBER = "number"
 }
+
+enum OperationOption {
+    ADD = "Add",
+    SUBTRACT = "Subtract",
+    MULTIPLY = "Multiply",
+    DIVIDE = "Divide",
+    COMBINE = "Combine"
+}
+
 const getDataFieldtypes = (dataSetMap: Map<string, string[]>) : Map<string, string> => {
     const typeMap = new Map<string, string>();
 
@@ -15,9 +24,11 @@ const getDataFieldtypes = (dataSetMap: Map<string, string[]>) : Map<string, stri
 }
 
 const isDollarAmount = (str: string): boolean => {
-    return /^\$?\d{1,3}(,\d{3})*(\.\d{2})?$/.test(str);
-  };
+  return /^\$?\d{1,3}(,\d{3})*(\.\d{2})?$|^\$?\d+(\.\d{2})?$/.test(str);
+};
 
   export {
-    getDataFieldtypes
+    getDataFieldtypes,
+    DataFieldType,
+    OperationOption
   }
