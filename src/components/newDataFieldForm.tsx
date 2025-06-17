@@ -18,30 +18,26 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import DataFieldSelect from "./dataFieldSelect";
 import { Input } from "./ui/input";
-import { DataFieldType, OperationOption } from "../lib/helpers";
+import { useDataSetStore } from "../store/store";
+import { DataType, OperationType } from "../types/types";
 
-export default function NewDataFieldForm(props: {
-  dataFieldTypes: Map<string, string>;
-}) {
-  const { dataFieldTypes } = props;
-  const [field1Options, ] = useState<string[]>([
-    ...dataFieldTypes?.keys(),
-  ]);
-  const [field2options, setField2Options] = useState<string[]>([
-    ...dataFieldTypes?.keys(),
-  ]);
+export default function NewDataFieldForm() {
+  const columns = useDataSetStore(state => state.columns)
+
+  const [dataField1Options, ] = useState<string[]>(columns?.map(column => column.name));
+  const [dataField2options, setDataField2Options] = useState<string[]>(columns?.map(column => column.name));
 
   const operationMap = new Map<string, string[]>([
     [
-      DataFieldType.NUMBER,
+      DataType.NUMBER,
       [
-        OperationOption.ADD,
-        OperationOption.SUBTRACT,
-        OperationOption.MULTIPLY,
-        OperationOption.DIVIDE,
+        OperationType.ADD,
+        OperationType.SUBTRACT,
+        OperationType.MULTIPLY,
+        OperationType.DIVIDE,
       ],
     ],
-    [DataFieldType.TEXT, [OperationOption.COMBINE]],
+    [DataType.TEXT, [OperationType.CONCATENATE]],
   ]);
 
   const [operationOptions, setOperationOptions] = useState<string[]>([]);
@@ -75,15 +71,9 @@ export default function NewDataFieldForm(props: {
   }
 
   const onChange = (value: string) => {
-    const dataFieldType = dataFieldTypes.get(value);
+    const dataFieldType = columns.find(column => column.name === value).dataType;
     setOperationOptions(operationMap.get(dataFieldType));
-    setField2Options(
-      Array.from(dataFieldTypes)
-        .filter(([k, v]) => {
-          return v === dataFieldType;
-        })
-        .map(([key]) => key)
-    );
+    setDataField2Options(columns.filter(column => column.dataType === dataFieldType ).map(column => column.name));
   };
 
   return (
@@ -115,7 +105,7 @@ export default function NewDataFieldForm(props: {
                 <FormItem>
                   <DataFieldSelect
                     field={field}
-                    options={field1Options}
+                    options={dataField1Options}
                     onChange={onChange}
                   />
                   <FormMessage />
@@ -160,7 +150,7 @@ export default function NewDataFieldForm(props: {
                   <DataFieldSelect
                     onChange={(value: string) => {}}
                     field={field}
-                    options={field2options}
+                    options={dataField2options}
                   />
                   <FormMessage />
                 </FormItem>

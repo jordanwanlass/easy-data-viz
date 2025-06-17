@@ -1,15 +1,13 @@
-import { useState } from "react";
 import { Input } from "./ui/input";
 import parse from "papaparse";
 import AddDataDialog from "./addDataDialog";
 import DataSetTable from "./DataSetTable";
-import { getDataFieldtypes } from "../lib/helpers";
+import { getColumns } from "../lib/helpers";
+
+import { useDataSetStore } from "../store/store";
 
 export default function CreateDataSet() {
-  const [dataSetMap, setDataSetMap] = useState<
-    Map<string, string[]>
-  >(new Map<string, string[]>());
-  const [dataFieldTypes, setDataFieldTypes] = useState<Map<string, string>>(new Map<string, string>())
+  const { data, loadCsvData } = useDataSetStore(state => state)
 
   const handFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputedFile = event.target.files?.[0];
@@ -18,20 +16,11 @@ export default function CreateDataSet() {
       parse.parse(inputedFile, {
         header: true,
         complete: function (
-          results: parse.ParseResult<Record<string, string>>
+          results: parse.ParseResult<Record<string, string>>,
+          file: File
         ) {
           if (results.data.length > 0) {
-            const headers = Object.keys(results.data[0]);
-            const newDataSetMap = new Map<string, string[]>();
-
-            headers.forEach((header) => {
-              newDataSetMap.set(
-                header,
-                results.data.map((row) => row[header] || "")
-              );
-            });
-            setDataFieldTypes(getDataFieldtypes(newDataSetMap));
-            setDataSetMap(newDataSetMap);
+            loadCsvData(file.name, results.data, getColumns(results.data[0], Object.keys(results.data[0])))
           }
         },
       });
@@ -43,15 +32,15 @@ export default function CreateDataSet() {
   return (
     <div
       className={`h-full grid ${
-        dataSetMap.size > 0  ? "py-4 px-4" : "items-center justify-center"
+        data.length > 0  ? "py-4 px-4" : "items-center justify-center"
       }`}
     >
-      {dataSetMap.size > 0 ? (
+      {data.length > 0 ? (
         <div>
           <div className="flex mb-8 items-center">
-            <AddDataDialog dataFieldTypes={dataFieldTypes}/>
+            <AddDataDialog />
           </div>
-          <DataSetTable dataSetMap={dataSetMap}/>
+          <DataSetTable />
         </div>
       ) : (
         <div className="grid w-full max-w-sm items-center gap-3">

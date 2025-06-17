@@ -1,26 +1,16 @@
-enum DataFieldType {
-    TEXT = "text",
-    NUMBER = "number"
-}
+import { ColumnData, DataType, RowData } from "../types/types";
 
-enum OperationOption {
-    ADD = "Add",
-    SUBTRACT = "Subtract",
-    MULTIPLY = "Multiply",
-    DIVIDE = "Divide",
-    COMBINE = "Combine"
-}
 
-const getDataFieldtypes = (dataSetMap: Map<string, string[]>) : Map<string, string> => {
-    const typeMap = new Map<string, string>();
 
-    for(let i = 0; i < 2; i++) {
-        [...dataSetMap.keys()].map((header) => {
-            typeMap.set(header, (isDollarAmount(dataSetMap.get(header)[i]) ? DataFieldType.NUMBER : DataFieldType.TEXT));
-        })
-    }
+const getColumns = (row: RowData, columnNames: string[]) : ColumnData[] => {
+    const columns: ColumnData[] = [];
 
-    return typeMap;
+      columnNames.map(column => {
+        const type = (isDollarAmount(row[column]) ? DataType.NUMBER : DataType.TEXT)
+        columns.push({name: column, dataType: type})
+      })
+
+    return columns;
 }
 
 const isDollarAmount = (str: string): boolean => {
@@ -28,7 +18,5 @@ const isDollarAmount = (str: string): boolean => {
 };
 
   export {
-    getDataFieldtypes,
-    DataFieldType,
-    OperationOption
+    getColumns
   }

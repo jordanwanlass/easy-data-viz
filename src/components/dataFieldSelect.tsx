@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "./ui/select";
 
-export default function DataFieldSelect(props: { options: string[], field: ControllerRenderProps, onChange: (value:string) => void }) {
+export default function DataFieldSelect(props: { options: string[], field: any, onChange: (value:string) => void }) {
   const { options, field, onChange } = props;
 
   return (

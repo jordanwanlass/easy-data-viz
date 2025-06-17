@@ -1,3 +1,5 @@
+import { useDataSetStore } from "../store/store";
+import { ColumnData, RowData } from "../types/types";
 import {
   Table,
   TableBody,
@@ -7,30 +9,26 @@ import {
   TableRow,
 } from "./ui/table";
 
-export default function DataSetTable(props: {
-  dataSetMap: Map<string, (string | number)[]>;
-}) {
-   const { dataSetMap } = props;
-   
-    const headers = [...dataSetMap.keys()];
-    const rowCount =
-      dataSetMap.size > 0 ? dataSetMap.values().next().value.length : 0;
+export default function DataSetTable() {
+  const { data, columns } = useDataSetStore((state) => state);
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {headers.map((header: string, index: number) => (
-            <TableHead key={`header-${header}-${index}`}>{header}</TableHead>
+          {columns.map((column: ColumnData, index: number) => (
+            <TableHead key={`header-${column.name}-${index}`}>
+              {column.name}
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[...Array(rowCount)].map((_, rowIndex: number) => (
+        {data.map((row: RowData, rowIndex: number) => (
           <TableRow key={`row-${rowIndex}`}>
-            {headers.map((header: string, cellIndex: number) => (
-              <TableCell key={`cell-${rowIndex}-${cellIndex}-${header}`}>
-                {dataSetMap.get(header)?.[rowIndex] || ""}
+            {columns.map((column: ColumnData, cellIndex: number) => (
+              <TableCell key={`cell-${rowIndex}-${cellIndex}-${column.name}`}>
+                {row[column.name] || ""}
               </TableCell>
             ))}
           </TableRow>

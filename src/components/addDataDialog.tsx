@@ -11,10 +11,7 @@ import {
 
 import NewDataFieldForm from "./newDataFieldForm";
 
-export default function AddDataDialog(props: {
-  dataFieldTypes: Map<string, string>;
-}) {
-  const { dataFieldTypes } = props;
+export default function AddDataDialog() {
 
   return (
     <Dialog>
@@ -33,7 +30,7 @@ export default function AddDataDialog(props: {
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-2">
-          <NewDataFieldForm dataFieldTypes={dataFieldTypes} />
+          <NewDataFieldForm />
         </div>
       </DialogContent>
     </Dialog>
