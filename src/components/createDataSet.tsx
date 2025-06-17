@@ -6,7 +6,6 @@ import DataSetTable from "./DataSetTable";
 import { getDataFieldtypes } from "../lib/helpers";
 
 export default function CreateDataSet() {
-  const [file, setFile] = useState<File | null>(null);
   const [dataSetMap, setDataSetMap] = useState<
     Map<string, string[]>
   >(new Map<string, string[]>());
@@ -33,7 +32,6 @@ export default function CreateDataSet() {
             });
             setDataFieldTypes(getDataFieldtypes(newDataSetMap));
             setDataSetMap(newDataSetMap);
-            setFile(inputedFile);
           }
         },
       });
@@ -45,10 +43,10 @@ export default function CreateDataSet() {
   return (
     <div
       className={`h-full grid ${
-        file ? "py-4 px-4" : "items-center justify-center"
+        dataSetMap.size > 0  ? "py-4 px-4" : "items-center justify-center"
       }`}
     >
-      {file ? (
+      {dataSetMap.size > 0 ? (
         <div>
           <div className="flex mb-8 items-center">
             <AddDataDialog dataFieldTypes={dataFieldTypes}/>

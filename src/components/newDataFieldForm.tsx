@@ -24,10 +24,10 @@ export default function NewDataFieldForm(props: {
   dataFieldTypes: Map<string, string>;
 }) {
   const { dataFieldTypes } = props;
-  const [field1Options, setDataFields] = useState<string[]>([
+  const [field1Options, ] = useState<string[]>([
     ...dataFieldTypes?.keys(),
   ]);
-  const [field2options, setDataFields1] = useState<string[]>([
+  const [field2options, setField2Options] = useState<string[]>([
     ...dataFieldTypes?.keys(),
   ]);
 
@@ -77,7 +77,7 @@ export default function NewDataFieldForm(props: {
   const onChange = (value: string) => {
     const dataFieldType = dataFieldTypes.get(value);
     setOperationOptions(operationMap.get(dataFieldType));
-    setDataFields1(
+    setField2Options(
       Array.from(dataFieldTypes)
         .filter(([k, v]) => {
           return v === dataFieldType;
