@@ -7,7 +7,7 @@ interface DataSetStoreActions {
   addColumn: (
     columnName: string,
     column: ColumnData,
-    operation: (row: RowData, rowIndex: number) => any,
+    valueMapper: (row: RowData, rowIndex: number) => any,
     sourceColumns: string[], // e.g., for formulas like 'colA' + 'colB'
   ) => void;
   deleteColumn: (columnName: string) => void;
@@ -39,27 +39,27 @@ export const useDataSetStore = create<DataSetState & DataSetStoreActions>()(
         });
       },
   
-      addColumn: (columnName : string, column: ColumnData, operation, sourceColumns) => {
+      addColumn: (columnName : string, column: ColumnData, valueMapper, sourceColumns) => {
         set(state => {
           const columnNames = state.columns.map(column => column.name);
-          if (columnNames.includes(columnName)) {
-            console.warn(`Column '${columnName}' already exists. Overwriting.`);
+          if (columnNames.includes(column.name)) {
+            console.warn(`Column '${column.name}' already exists. Overwriting.`);
             // You might want to throw an error or handle this differently
           }
   
           const newData = state.data.map((row : RowData, index: number) => {
-            const newColumnValue = operation(row, index);
+            const newColumnValue = valueMapper(row, index);
             return {
               ...row,
-              [columnName]: newColumnValue,
+              [column.name]: newColumnValue,
             };
           });
   
           state.data = newData;
           // Only add if it's genuinely a new column
-          // if (!columnNames.includes(columnName)) {
-          //   state.columns.push(columnName);
-          // }
+          if (!columnNames.includes(column.name)) {
+            state.columns.push(column);
+          }
         });
       },
   
