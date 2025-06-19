@@ -1,5 +1,5 @@
 import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
-import { ColumnData, DataType, OperationType } from "../types/types";
+import { ColumnData, DataType, DisplayFormat, OperationType } from "../types/types";
 import {
   FormField,
   FormItem,
@@ -31,6 +31,7 @@ interface DataFieldRowProps {
     minSourceColumns?: number;
     maxSourceColumns?: number;
     applicableTypes?: DataType[];
+    applicableFormats?: DisplayFormat[];
   }[];
 }
 
@@ -70,6 +71,10 @@ export function DataFieldRow({
   const dataTypeOptions = Object.values(DataType).filter((opt) => {
     return currentOperationType.applicableTypes.includes(opt);
   });
+
+  const formatOptions = Object.values(DisplayFormat).filter((opt) => {
+    return currentOperationType.applicableFormats.includes(opt);
+  })
 
   const handleAddSourceColumn = () => {
     if (sourceColumnFields.length < maxSourceColumns) {
@@ -207,32 +212,27 @@ export function DataFieldRow({
         />
       )}
 
-      {/* New Column Type Select (User Override) */}
+      {/* New Column Format Select (User Override) */}
       <FormField
         control={control}
-        name={`etlOperations.${operationIndex}.dataType`}
+        name={`etlOperations.${operationIndex}.newColumnFormat`} // <-- Field name
         render={({ field }) => (
           <FormItem>
-            <FormLabel>New Column Type</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value || DataType.Text}
-            >
+            <FormLabel>Output Format</FormLabel> {/* Renamed label to reflect its broader role */}
+            <Select onValueChange={field.onChange} defaultValue={field.value || DisplayFormat.None}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Infer Type" />
+                  <SelectValue placeholder="None" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {dataTypeOptions.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
+                {formatOptions.map(format => (
+                  <SelectItem key={format} value={format}>{format}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <FormDescription>
-              This will be the explicit type of the new column.
+              How the new column's values will be displayed and implicitly determines the underlying data type.
             </FormDescription>
             <FormMessage />
           </FormItem>

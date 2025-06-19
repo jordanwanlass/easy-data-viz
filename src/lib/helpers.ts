@@ -7,10 +7,10 @@ const usDollarRegex = /^\$?\d{1,3}(,\d{3})*(\.\d{2})?$|^\$?\d+(\.\d{2})?$/;
  * Infers the DataType and a suggested DisplayFormat for a given value.
  */
 function inferDataTypeAndFormat(value: any): {
-  type: DataType;
+  dataType: DataType;
   format: DisplayFormat;
 } {
-  const result = { type: DataType.Text, format: DisplayFormat.None }; // Default
+  const result = { dataType: DataType.Text, format: DisplayFormat.None }; // Default
 
   if (
     value === null ||
@@ -21,53 +21,49 @@ function inferDataTypeAndFormat(value: any): {
   }
 
   if (typeof value === "boolean") {
-    result.type = DataType.Boolean;
+    result.dataType = DataType.Boolean;
     return result;
   }
 
   if (typeof value === "number" && !isNaN(value)) {
-    result.type = DataType.Number;
+    result.dataType = DataType.Number;
     return result; // Already a number, no special format inference unless it came from somewhere
   }
 
   if (typeof value === "string") {
     const trimmedValue = value.trim();
 
-    // 1. Check for possible Dollar format first
+    if (!isNaN(parseFloat(trimmedValue)) && isFinite(Number(trimmedValue))) {
+      result.dataType = DataType.Number;
+      return result;
+    }
+
     if (usDollarRegex.test(trimmedValue)) {
       const numericValue = parseFloat(trimmedValue.replace(/[\$,]/g, ""));
       if (!isNaN(numericValue) && isFinite(numericValue)) {
-        result.type = DataType.Number; // Underlying type is Number
+        result.dataType = DataType.Number; // Underlying type is Number
         result.format = DisplayFormat.CurrencyUSD; // Suggested display format
         return result;
       }
     }
 
-    // 2. Generic Number Check (for strings like "123", "45.67", "-10")
-    if (!isNaN(parseFloat(trimmedValue)) && isFinite(Number(trimmedValue))) {
-      result.type = DataType.Number;
-      return result;
-    }
-
-    // 3. Boolean String Check
     if (/^(true|false|yes|no)$/i.test(trimmedValue)) {
-      result.type = DataType.Boolean;
+      result.dataType = DataType.Boolean;
       return result;
     }
 
-    // 4. Date Check
     const dateRegex =
       /^\d{4}[-/]\d{2}[-/]\d{2}(?:[ T]\d{2}:\d{2}(?::\d{2})?(?:\.\d+Z?)?)?$/;
     if (
       dateRegex.test(trimmedValue) &&
       !isNaN(new Date(trimmedValue).getTime())
     ) {
-      result.type = DataType.Date;
+      result.dataType = DataType.Date;
       return result;
     }
   }
 
-  return result; // Fallback to Text/None
+  return result;
 }
 
 /**

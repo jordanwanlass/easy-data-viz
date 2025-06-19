@@ -35,10 +35,11 @@ export const useDataSetStore = create<DataSetState & DataSetStoreActions>()( // 
       if (parsedData.length > 0) {
         const sampleRow = parsedData[0];
         Object.keys(sampleRow).map(key => {
-          const { type, format } = inferDataTypeAndFormat(sampleRow[key]);
+          const { dataType, format } = inferDataTypeAndFormat(sampleRow[key]);
+          console.log("key: {}, type: {}, format: {}", key, dataType, format);
           finalColumnData.push({
             name: key,
-            dataType: type,
+            dataType: dataType,
             format: format,
           });
         })

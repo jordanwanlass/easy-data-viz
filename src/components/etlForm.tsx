@@ -2,7 +2,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
 import { etlFormSchema, EtlFormValues } from "../schemas/etlFormSchema";
-import { DataType, OperationType } from "../types/types";
+import { DataType, DisplayFormat, OperationType } from "../types/types";
 import { useDataSetStore } from "../store/store";
 
 import { Form } from "./ui/form";
@@ -21,6 +21,7 @@ const commonOperationOptions = [
     minSourceColumns: 1,
     maxSourceColumns: 1,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
   {
     value: OperationType.Absolute,
@@ -28,36 +29,42 @@ const commonOperationOptions = [
     minSourceColumns: 1,
     maxSourceColumns: 1,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
   {
     value: OperationType.Add,
     label: "Add (Col + Col + ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
   {
     value: OperationType.Subtract,
     label: "Subtract (Col - Col - ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
   {
     value: OperationType.Multiply,
     label: "Multiply (Col * Col * ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
   {
     value: OperationType.Divide,
     label: "Divide (Col / Col / ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
   {
     value: OperationType.Combine,
-    label: "Concatenate (Col + Col + ...)",
+    label: "Combine (Col + Col + ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Text],
+    applicableFormats: [DisplayFormat.None],
   },
   {
     value: OperationType.Custom,
@@ -65,6 +72,7 @@ const commonOperationOptions = [
     minSourceColumns: 1,
     maxSourceColumns: Infinity,
     applicableTypes: [DataType.Number],
+    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
   },
 ];
 
@@ -78,7 +86,7 @@ export function ETLForm({ onSubmit }: ETLFormProps) {
         {
           id: uuidv4(),
           newColumnName: "",
-          dataType: DataType.Number,
+          newColumnFormat: DisplayFormat.None,
           operation: OperationType.Custom,
           sourceColumns: [{ id: uuidv4(), columnName: "" }],
         },
@@ -95,7 +103,7 @@ export function ETLForm({ onSubmit }: ETLFormProps) {
     append({
       id: uuidv4(),
       newColumnName: "",
-      dataType: DataType.Number,
+      newColumnFormat: DisplayFormat.None,
       operation: OperationType.Custom,
       sourceColumns: [{ id: uuidv4(), columnName: "" }],
     });

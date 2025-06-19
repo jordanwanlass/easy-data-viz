@@ -1,6 +1,6 @@
 // schemas/etlFormSchema.ts
 import { z } from "zod";
-import { DataType, OperationType } from "../types/types"; // Assuming ColumnType enum
+import { DisplayFormat, OperationType } from "../types/types"; // Assuming ColumnType enum
 
 // Schema for a single source column selection within an operation
 export const singleSourceColumnSchema = z.object({
@@ -12,9 +12,8 @@ export const singleSourceColumnSchema = z.object({
 export const dataFieldRowSchema = z.object({
   id: z.string().uuid().optional(),
   newColumnName: z.string().min(1, { message: "New column name is required" }),
-  dataType: z.nativeEnum(DataType).default(DataType.Text), // User can pick or infer
+  newColumnFormat: z.nativeEnum(DisplayFormat).default(DisplayFormat.None),
   operation: z.nativeEnum(OperationType).default(OperationType.Custom),
-  // Now, a dynamic array of source columns for this operation
   sourceColumns: z
     .array(singleSourceColumnSchema)
     .min(1, {
