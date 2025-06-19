@@ -20,6 +20,7 @@ import { Button } from "./ui/button";
 import { XCircle, PlusCircle } from "lucide-react";
 import { DataFieldSelectRow } from "./dataFieldSelectRow";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect } from "react";
 
 interface DataFieldRowProps {
   operationIndex: number;
@@ -41,7 +42,7 @@ export function DataFieldRow({
   availableColumns,
   operationOptions,
 }: DataFieldRowProps) {
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
 
   const {
     fields: sourceColumnFields,
@@ -68,13 +69,14 @@ export function DataFieldRow({
     return currentOperationType.applicableTypes.includes(col.dataType);
   });
 
-  const dataTypeOptions = Object.values(DataType).filter((opt) => {
-    return currentOperationType.applicableTypes.includes(opt);
-  });
-
   const formatOptions = Object.values(DisplayFormat).filter((opt) => {
     return currentOperationType.applicableFormats.includes(opt);
   })
+
+  useEffect(() => {
+    setValue(`etlOperations.${operationIndex}.sourceColumns.0.columnName`, columnOptions[0]?.name)
+    setValue(`etlOperations.${operationIndex}.newColumnFormat`, formatOptions[0])
+  },[selectedOperation])
 
   const handleAddSourceColumn = () => {
     if (sourceColumnFields.length < maxSourceColumns) {
@@ -219,7 +221,7 @@ export function DataFieldRow({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Output Format</FormLabel> {/* Renamed label to reflect its broader role */}
-            <Select onValueChange={field.onChange} defaultValue={field.value || DisplayFormat.None}>
+            <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value || DisplayFormat.None}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="None" />

@@ -38,7 +38,7 @@ export function DataFieldSelectRow({
         render={({ field }) => (
           <FormItem className="flex-grow">
             <FormControl>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a column" />
                 </SelectTrigger>
