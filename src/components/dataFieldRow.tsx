@@ -1,8 +1,4 @@
-import {
-  useFormContext,
-  useFieldArray,
-  useWatch,
-} from "react-hook-form";
+import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
 import { ColumnData, DataType, OperationType } from "../types/types";
 import {
   FormField,
@@ -62,7 +58,7 @@ export function DataFieldRow({
   });
 
   const currentOperationType = operationOptions.find(
-    (opt) => opt.value === selectedOperation
+    (opt) => opt.value === selectedOperation,
   );
   const minSourceColumns = currentOperationType?.minSourceColumns || 1;
   const maxSourceColumns = currentOperationType?.maxSourceColumns || Infinity;
@@ -121,7 +117,7 @@ export function DataFieldRow({
               onValueChange={(value) => {
                 field.onChange(value);
                 const newOperationDef = operationOptions.find(
-                  (opt) => opt.value === value
+                  (opt) => opt.value === value,
                 );
                 const newMin = newOperationDef?.minSourceColumns || 1;
                 const newMax = newOperationDef?.maxSourceColumns || Infinity;
@@ -210,7 +206,7 @@ export function DataFieldRow({
           )}
         />
       )}
- 
+
       {/* New Column Type Select (User Override) */}
       <FormField
         control={control}

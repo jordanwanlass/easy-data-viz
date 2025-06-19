@@ -83,7 +83,7 @@ export function ETLForm({ onSubmit }: ETLFormProps) {
           operation: OperationType.CUSTOM,
           sourceColumns: [{ id: uuidv4(), columnName: "" }],
         },
-      ], 
+      ],
     },
   });
 

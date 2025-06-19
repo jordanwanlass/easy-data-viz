@@ -49,13 +49,16 @@ export default function Page() {
             );
           })}
         </div>
-        <div className="col-span-3 border rounded-2xl shadow-xl/20 overflow-scroll" style={{ maxHeight: "95vh" }}>
+        <div
+          className="col-span-3 border rounded-2xl shadow-xl/20 overflow-scroll"
+          style={{ maxHeight: "95vh" }}
+        >
           <Routes>
             <Route path="/" element={<CreateDataSet />} />
             <Route path="/createDataSet" element={<CreateDataSet />} />
             <Route path="/analyzeDataSet" element={<AnalyzeDataSet />} />
             <Route path="/dataSets" element={<DataSets />} />
-            <Route path="/etl" element={<ETLComponent />}/>
+            <Route path="/etl" element={<ETLComponent />} />
           </Routes>
         </div>
       </HashRouter>
