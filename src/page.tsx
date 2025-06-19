@@ -3,6 +3,7 @@ import CreateDataSet from "./components/createDataSet";
 import AnalyzeDataSet from "./components/analyzeDataSet";
 import { SquareStack, Upload, ChartColumnBig, List } from "lucide-react";
 import DataSets from "./components/dataSets";
+import ETLComponent from "./components/etlComponent";
 
 const links = [
   {
@@ -54,6 +55,7 @@ export default function Page() {
             <Route path="/createDataSet" element={<CreateDataSet />} />
             <Route path="/analyzeDataSet" element={<AnalyzeDataSet />} />
             <Route path="/dataSets" element={<DataSets />} />
+            <Route path="/etl" element={<ETLComponent />}/>
           </Routes>
         </div>
       </HashRouter>

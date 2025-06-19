@@ -1,6 +1,8 @@
 enum DataType {
-  TEXT = "text",
-  NUMBER = "number"
+  TEXT = "Text",
+  NUMBER = "Number",
+  BOOLEAN = "Boolean",
+  DATE = "Date"
 }
 
 enum OperationType {
@@ -8,11 +10,14 @@ enum OperationType {
   SUBTRACT = "Subtract",
   MULTIPLY = "Multiply",
   DIVIDE = "Divide",
-  CONCATENATE = "Concatenate"
+  CONCATENATE = "Concatenate",
+  NEGATE = "Negate",
+  ABSOLUTE = "Absolute",
+  CUSTOM = "Custom"
 }
 
 type RowData = {
-    [key: string]: string; // Value types can be more specific based on your parsing
+    [key: string]: string;
   };
 
 type ColumnData = {
@@ -22,7 +27,7 @@ type ColumnData = {
   
  type DataSetState = {
     data: RowData[];
-    columns: ColumnData[]; // To maintain order and display columns
+    columns: ColumnData[];
     fileName: string | null;
     isLoading: boolean;
     error: string | null;

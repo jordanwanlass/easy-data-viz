@@ -5,6 +5,9 @@ import DataSetTable from "./DataSetTable";
 import { getColumns } from "../lib/helpers";
 
 import { useDataSetStore } from "../store/store";
+import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 export default function CreateDataSet() {
   const { data, loadCsvData } = useDataSetStore(state => state)
@@ -38,7 +41,11 @@ export default function CreateDataSet() {
       {data.length > 0 ? (
         <div>
           <div className="flex mb-8 items-center">
-            <AddDataDialog />
+            <Button asChild>
+              <Link to="/etl">
+                <Plus className="h-4 w-4"/> Add Data
+              </Link>
+            </Button>
           </div>
           <DataSetTable />
         </div>
