@@ -1,7 +1,6 @@
 import { Input } from "./ui/input";
 import parse from "papaparse";
-import DataSetTable from "./DataSetTable";
-import { getColumns } from "../lib/helpers";
+import DataSetTable from "./dataSetTable";
 
 import { useDataSetStore } from "../store/store";
 import { Button } from "./ui/button";
@@ -19,14 +18,10 @@ export default function CreateDataSet() {
         header: true,
         complete: function (
           results: parse.ParseResult<Record<string, string>>,
-          file: File,
+          file: File
         ) {
           if (results.data.length > 0) {
-            loadCsvData(
-              file.name,
-              results.data,
-              getColumns(results.data[0], Object.keys(results.data[0])),
-            );
+            loadCsvData(file.name, results.data);
           }
         },
       });

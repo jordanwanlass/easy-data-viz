@@ -69,7 +69,7 @@ const commonOperationOptions = [
 ];
 
 export function ETLForm({ onSubmit }: ETLFormProps) {
-  const availableColumns = useDataSetStore((state) => state.columns);
+  const availableColumns = useDataSetStore((state) => state.columnData);
 
   const form = useForm<EtlFormValues>({
     resolver: zodResolver(etlFormSchema),

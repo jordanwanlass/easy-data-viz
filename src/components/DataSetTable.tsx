@@ -10,13 +10,13 @@ import {
 } from "./ui/table";
 
 export default function DataSetTable() {
-  const { data, columns } = useDataSetStore((state) => state);
+  const { data, columnData } = useDataSetStore((state) => state);
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {columns.map((column: ColumnData, index: number) => (
+          {columnData.map((column: ColumnData, index: number) => (
             <TableHead key={`header-${column.name}-${index}`}>
               {column.name}
             </TableHead>
@@ -26,7 +26,7 @@ export default function DataSetTable() {
       <TableBody>
         {data.map((row: RowData, rowIndex: number) => (
           <TableRow key={`row-${rowIndex}`}>
-            {columns.map((column: ColumnData, cellIndex: number) => (
+            {columnData.map((column: ColumnData, cellIndex: number) => (
               <TableCell key={`cell-${rowIndex}-${cellIndex}-${column.name}`}>
                 {row[column.name] || ""}
               </TableCell>

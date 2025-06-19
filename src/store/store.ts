@@ -1,20 +1,18 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { RowData, DataSetState, ColumnData } from "../types/types";
+import { RowData, DataSetState, ColumnData, DataType, DisplayFormat } from "../types/types";
+import { inferDataTypeAndFormat, castValueToType } from "../lib/helpers";
 
 interface DataSetStoreActions {
-  loadCsvData: (
-    fileName: string,
-    parsedData: RowData[],
-    columns: ColumnData[],
-  ) => void;
+  loadCsvData: (fileName: string, parsedData: RowData[]) => void;
   addColumn: (
-    columnName: string,
-    column: ColumnData,
+    newColumnData: ColumnData,
     valueMapper: (row: RowData, rowIndex: number) => any,
-    sourceColumns: string[], // e.g., for formulas like 'colA' + 'colB'
+    sourceColumnsUsed?: string[],
   ) => void;
   deleteColumn: (columnName: string) => void;
+  updateColumnType: (columnName: string, newType: DataType) => void;
+  updateColumnFormat: (columnName: string, newFormat: DisplayFormat) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   resetStore: () => void;
@@ -22,81 +20,111 @@ interface DataSetStoreActions {
 
 const initialState: DataSetState = {
   data: [],
-  columns: [],
+  columnData: [],
   fileName: null,
   isLoading: false,
   error: null,
 };
 
-export const useDataSetStore = create<DataSetState & DataSetStoreActions>()(
+export const useDataSetStore = create<DataSetState & DataSetStoreActions>()( // Renamed types here
   immer((set, get) => ({
     ...initialState,
 
-    loadCsvData: (fileName, parsedData, columns: ColumnData[]) => {
-      // Assuming parsedData is an array of objects where keys are column names
-      set((state) => {
+    loadCsvData: (fileName, parsedData) => {
+      const finalColumnData: ColumnData[] = [];
+      if (parsedData.length > 0) {
+        const sampleRow = parsedData[0];
+        Object.keys(sampleRow).map(key => {
+          const { type, format } = inferDataTypeAndFormat(sampleRow[key]);
+          finalColumnData.push({
+            name: key,
+            dataType: type,
+            format: format,
+          });
+        })
+      }
+
+      set(state => {
         state.fileName = fileName;
         state.data = parsedData;
-        state.columns = columns;
+        state.columnData = finalColumnData;
         state.isLoading = false;
         state.error = null;
       });
     },
 
-    addColumn: (
-      columnName: string,
-      column: ColumnData,
-      valueMapper,
-      sourceColumns,
-    ) => {
-      set((state) => {
-        const columnNames = state.columns.map((column) => column.name);
-        if (columnNames.includes(column.name)) {
-          console.warn(`Column '${column.name}' already exists. Overwriting.`);
-          // You might want to throw an error or handle this differently
+    addColumn: (newColumnData, valueMapper, sourceColumnsUsed) => {
+      set(state => {
+        const { name: columnName } = newColumnData;
+
+        const existingColumnIndex = state.columnData.findIndex(
+          data => data.name === columnName,
+        );
+
+        if (existingColumnIndex !== -1) {
+          console.warn(`Column '${columnName}' already exists. Overwriting values and data.`);
+          state.columnData[existingColumnIndex] = newColumnData;
         }
 
-        const newData = state.data.map((row: RowData, index: number) => {
+        const newData = state.data.map((row, index) => {
           const newColumnValue = valueMapper(row, index);
           return {
             ...row,
-            [column.name]: newColumnValue,
+            [columnName]: castValueToType(newColumnValue, newColumnData.dataType),
           };
         });
 
         state.data = newData;
-        // Only add if it's genuinely a new column
-        if (!columnNames.includes(column.name)) {
-          state.columns.push(column);
+        if (existingColumnIndex === -1) {
+          state.columnData.push(newColumnData);
         }
       });
     },
 
-    deleteColumn: (columnName) => {
-      set((state: DataSetState) => {
-        state.data = state.data.map((row: RowData) => {
+    deleteColumn: columnName => {
+      set(state => {
+        state.data = state.data.map(row => {
           const newRow = { ...row };
           delete newRow[columnName];
           return newRow;
         });
-        state.columns = state.columns.filter(
-          (column) => column.name !== columnName,
+        state.columnData = state.columnData.filter(
+          data => data.name !== columnName,
         );
       });
     },
 
-    setLoading: (isLoading) => {
-      set((state) => {
+    updateColumnType: (columnName, newDataType) => {
+      set(state => {
+        const columnDataItem = state.columnData.find(data => data.name === columnName);
+        if (columnDataItem) {
+          columnDataItem.dataType = newDataType;
+          if (newDataType !== DataType.Number) {
+             columnDataItem.format = DisplayFormat.None;
+          }
+        }
+      });
+    },
+
+    updateColumnFormat: (columnName: string, newFormat: DisplayFormat) => {
+        set(state => {
+            const columnDataItem = state.columnData.find(data => data.name === columnName);
+            if (columnDataItem) {
+                columnDataItem.format = newFormat;
+            }
+        });
+    },
+
+    setLoading: isLoading => {
+      set(state => {
         state.isLoading = isLoading;
       });
     },
-
-    setError: (error) => {
-      set((state) => {
+    setError: error => {
+      set(state => {
         state.error = error;
       });
     },
-
     resetStore: () => {
       set(initialState);
     },

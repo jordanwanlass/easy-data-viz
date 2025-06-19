@@ -35,7 +35,7 @@ type ColumnData = {
 
 type DataSetState = {
   data: RowData[];
-  columns: ColumnData[];
+  columnData: ColumnData[];
   fileName: string | null;
   isLoading: boolean;
   error: string | null;
