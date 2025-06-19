@@ -12,8 +12,8 @@ export const singleSourceColumnSchema = z.object({
 export const dataFieldRowSchema = z.object({
   id: z.string().uuid().optional(),
   newColumnName: z.string().min(1, { message: "New column name is required" }),
-  dataType: z.nativeEnum(DataType).default(DataType.TEXT), // User can pick or infer
-  operation: z.nativeEnum(OperationType).default(OperationType.CUSTOM),
+  dataType: z.nativeEnum(DataType).default(DataType.Text), // User can pick or infer
+  operation: z.nativeEnum(OperationType).default(OperationType.Custom),
   // Now, a dynamic array of source columns for this operation
   sourceColumns: z
     .array(singleSourceColumnSchema)

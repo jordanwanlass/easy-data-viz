@@ -54,7 +54,7 @@ export function DataFieldRow({
   const selectedOperation = useWatch({
     control,
     name: `etlOperations.${operationIndex}.operation`,
-    defaultValue: OperationType.CUSTOM,
+    defaultValue: OperationType.Custom,
   });
 
   const currentOperationType = operationOptions.find(
@@ -191,7 +191,7 @@ export function DataFieldRow({
       </div>
 
       {/* Conditional Custom Formula Field */}
-      {selectedOperation === OperationType.CUSTOM && (
+      {selectedOperation === OperationType.Custom && (
         <FormField
           control={control}
           name={`etlOperations.${operationIndex}.customFormula`}
@@ -216,7 +216,7 @@ export function DataFieldRow({
             <FormLabel>New Column Type</FormLabel>
             <Select
               onValueChange={field.onChange}
-              defaultValue={field.value || DataType.TEXT}
+              defaultValue={field.value || DataType.Text}
             >
               <FormControl>
                 <SelectTrigger>

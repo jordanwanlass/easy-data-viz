@@ -16,56 +16,55 @@ interface ETLFormProps {
 
 const commonOperationOptions = [
   {
-    value: OperationType.NEGATE,
+    value: OperationType.Negate,
     label: "Negate Value",
     minSourceColumns: 1,
     maxSourceColumns: 1,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
   {
-    value: OperationType.ABSOLUTE,
+    value: OperationType.Absolute,
     label: "Absolute Value",
     minSourceColumns: 1,
     maxSourceColumns: 1,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
-
   {
-    value: OperationType.ADD,
+    value: OperationType.Add,
     label: "Add (Col + Col + ...)",
     minSourceColumns: 2,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
   {
-    value: OperationType.SUBTRACT,
+    value: OperationType.Subtract,
     label: "Subtract (Col - Col - ...)",
     minSourceColumns: 2,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
   {
-    value: OperationType.MULTIPLY,
+    value: OperationType.Multiply,
     label: "Multiply (Col * Col * ...)",
     minSourceColumns: 2,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
   {
-    value: OperationType.DIVIDE,
+    value: OperationType.Divide,
     label: "Divide (Col / Col / ...)",
     minSourceColumns: 2,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
   {
-    value: OperationType.CONCATENATE,
+    value: OperationType.Combine,
     label: "Concatenate (Col + Col + ...)",
     minSourceColumns: 2,
-    applicableTypes: [DataType.TEXT],
+    applicableTypes: [DataType.Text],
   },
   {
-    value: OperationType.CUSTOM,
+    value: OperationType.Custom,
     label: "Custom Formula",
     minSourceColumns: 1,
     maxSourceColumns: Infinity,
-    applicableTypes: [DataType.NUMBER],
+    applicableTypes: [DataType.Number],
   },
 ];
 
@@ -79,8 +78,8 @@ export function ETLForm({ onSubmit }: ETLFormProps) {
         {
           id: uuidv4(),
           newColumnName: "",
-          dataType: DataType.NUMBER,
-          operation: OperationType.CUSTOM,
+          dataType: DataType.Number,
+          operation: OperationType.Custom,
           sourceColumns: [{ id: uuidv4(), columnName: "" }],
         },
       ],
@@ -96,8 +95,8 @@ export function ETLForm({ onSubmit }: ETLFormProps) {
     append({
       id: uuidv4(),
       newColumnName: "",
-      dataType: DataType.NUMBER,
-      operation: OperationType.CUSTOM,
+      dataType: DataType.Number,
+      operation: OperationType.Custom,
       sourceColumns: [{ id: uuidv4(), columnName: "" }],
     });
   };
