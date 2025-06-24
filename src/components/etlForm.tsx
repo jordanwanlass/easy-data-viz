@@ -2,13 +2,19 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
 import { etlFormSchema, EtlFormValues } from "../schemas/etlFormSchema";
-import { DataType, DisplayFormat, OperationType } from "../types/types";
+import {
+  DataType,
+  DisplayFormat,
+  OperationType,
+} from "../types/types";
 import { useDataSetStore } from "../store/store";
 
 import { Form } from "./ui/form";
 import { Button } from "./ui/button";
 import { DataFieldRow } from "./dataFieldRow";
 import { Plus } from "lucide-react";
+import { performComplexETL } from "../lib/etl";
+import { useNavigate } from "react-router-dom";
 
 interface ETLFormProps {
   onSubmit: (values: EtlFormValues) => void;
@@ -21,7 +27,11 @@ const commonOperationOptions = [
     minSourceColumns: 1,
     maxSourceColumns: 1,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
   {
     value: OperationType.Absolute,
@@ -29,35 +39,55 @@ const commonOperationOptions = [
     minSourceColumns: 1,
     maxSourceColumns: 1,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
   {
     value: OperationType.Add,
     label: "Add (Col + Col + ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
   {
     value: OperationType.Subtract,
     label: "Subtract (Col - Col - ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
   {
     value: OperationType.Multiply,
     label: "Multiply (Col * Col * ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
   {
     value: OperationType.Divide,
     label: "Divide (Col / Col / ...)",
     minSourceColumns: 2,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
   {
     value: OperationType.Combine,
@@ -72,12 +102,19 @@ const commonOperationOptions = [
     minSourceColumns: 1,
     maxSourceColumns: Infinity,
     applicableTypes: [DataType.Number],
-    applicableFormats: [DisplayFormat.None, DisplayFormat.CurrencyUSD, DisplayFormat.Percentage],
+    applicableFormats: [
+      DisplayFormat.None,
+      DisplayFormat.CurrencyUSD,
+      DisplayFormat.Percentage,
+    ],
   },
 ];
 
-export function ETLForm({ onSubmit }: ETLFormProps) {
+export function ETLForm() {
   const availableColumns = useDataSetStore((state) => state.columnData);
+  const originalData = useDataSetStore((state) => state.data);
+  const addColumn = useDataSetStore((state) => state.addColumn);
+  const navigate = useNavigate();
 
   const form = useForm<EtlFormValues>({
     resolver: zodResolver(etlFormSchema),
@@ -110,8 +147,29 @@ export function ETLForm({ onSubmit }: ETLFormProps) {
   };
 
   const handleSubmit = async (values: EtlFormValues) => {
-    console.log("Form Values:", values);
-    onSubmit(values);
+    const operationConfigs = values.etlOperations;
+    let currentProcessedData = [...originalData];
+    let currentColumnDataList = [...availableColumns];
+    operationConfigs.map((operationConfig) => {
+      const { processedData, newColumnData } = performComplexETL(
+        currentProcessedData,
+        currentColumnDataList,
+        operationConfig
+      );
+
+      currentProcessedData = processedData;
+      currentColumnDataList = [...currentColumnDataList, newColumnData];
+
+      console.log(currentProcessedData)
+      addColumn(
+        newColumnData,
+        (_, index) => currentProcessedData[index][newColumnData.name],
+        operationConfig.sourceColumns
+          .map((sc) => sc.columnName)
+          .filter(Boolean) as string[]
+      );
+    });
+    navigate("/createDataSet");
   };
 
   return (

@@ -1,7 +1,8 @@
 import { DataType, DisplayFormat } from "../types/types";
 
-// Regex for US Dollar amounts (for INFERENCE of DisplayFormat)
-const usDollarRegex = /^\$?\d{1,3}(,\d{3})*(\.\d{2})?$|^\$?\d+(\.\d{2})?$/;
+const usDollarRegex = /^\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?$|^\$?\d+(?:\.\d{2})?$/;
+
+const percentageRegex = /^(-?\d+(?:\.\d+)?)\s*%$/;
 
 /**
  * Infers the DataType and a suggested DisplayFormat for a given value.
@@ -10,14 +11,14 @@ function inferDataTypeAndFormat(value: any): {
   dataType: DataType;
   format: DisplayFormat;
 } {
-  const result = { dataType: DataType.Text, format: DisplayFormat.None }; // Default
+  const result = { dataType: DataType.Text, format: DisplayFormat.None };
 
   if (
     value === null ||
     typeof value === "undefined" ||
     (typeof value === "string" && value.trim() === "")
   ) {
-    return result; // Keep default for empty/null
+    return result;
   }
 
   if (typeof value === "boolean") {
@@ -27,7 +28,7 @@ function inferDataTypeAndFormat(value: any): {
 
   if (typeof value === "number" && !isNaN(value)) {
     result.dataType = DataType.Number;
-    return result; // Already a number, no special format inference unless it came from somewhere
+    return result;
   }
 
   if (typeof value === "string") {
@@ -38,11 +39,22 @@ function inferDataTypeAndFormat(value: any): {
       return result;
     }
 
-    if (usDollarRegex.test(trimmedValue)) {
-      const numericValue = parseFloat(trimmedValue.replace(/[\$,]/g, ""));
+    if (percentageRegex.test(trimmedValue)) {
+      const cleanedValue = trimmedValue.replace('%', '');
+      const numericValue = parseFloat(cleanedValue);
       if (!isNaN(numericValue) && isFinite(numericValue)) {
-        result.dataType = DataType.Number; // Underlying type is Number
-        result.format = DisplayFormat.CurrencyUSD; // Suggested display format
+        result.dataType = DataType.Number;
+        result.format = DisplayFormat.Percentage;
+        return result;
+      }
+    }
+
+    if (usDollarRegex.test(trimmedValue)) {
+      const cleanedValue = trimmedValue.replace(/[\$,]/g, '');
+      const numericValue = parseFloat(cleanedValue);
+      if (!isNaN(numericValue) && isFinite(numericValue)) {
+        result.dataType = DataType.Number;
+        result.format = DisplayFormat.CurrencyUSD;
         return result;
       }
     }
@@ -77,7 +89,6 @@ function castValueToType(value: any, targetType: DataType): any {
 
   switch (targetType) {
     case DataType.Number:
-      // For numbers, strip common formatting (like dollar signs or commas) before parsing
       if (typeof value === "string") {
         const cleanedValue = value.replace(/[\$,%]/g, ""); // Also strip % if needed
         const num = Number(cleanedValue);
@@ -88,8 +99,7 @@ function castValueToType(value: any, targetType: DataType): any {
     case DataType.Boolean:
       if (typeof value === "string") {
         const lower = String(value).toLowerCase().trim();
-        if (lower === "true" || lower === "1" || lower === "yes") return true;
-        if (lower === "false" || lower === "0" || lower === "no") return false;
+        return (lower === "true" || lower === "1" || lower === "yes") || !(lower === "false" || lower === "0" || lower === "no")
       }
       return Boolean(value);
     case DataType.Date:
