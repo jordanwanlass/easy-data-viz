@@ -2,11 +2,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
 import { etlFormSchema, EtlFormValues } from "../schemas/etlFormSchema";
-import {
-  DataType,
-  DisplayFormat,
-  OperationType,
-} from "../types/types";
+import { DataType, DisplayFormat, OperationType } from "../types/types";
 import { useDataSetStore } from "../store/store";
 
 import { Form } from "./ui/form";
@@ -15,10 +11,6 @@ import { DataFieldRow } from "./dataFieldRow";
 import { Plus } from "lucide-react";
 import { performComplexETL } from "../lib/etl";
 import { useNavigate } from "react-router-dom";
-
-interface ETLFormProps {
-  onSubmit: (values: EtlFormValues) => void;
-}
 
 const commonOperationOptions = [
   {
@@ -160,7 +152,6 @@ export function ETLForm() {
       currentProcessedData = processedData;
       currentColumnDataList = [...currentColumnDataList, newColumnData];
 
-      console.log(currentProcessedData)
       addColumn(
         newColumnData,
         (_, index) => currentProcessedData[index][newColumnData.name],
@@ -173,48 +164,55 @@ export function ETLForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <div className="flex flex-col border-b pb-4 mb-4">
-          <Button
-            type="button"
-            onClick={handleAddDataField}
-            className="self-start"
+    <div className="flex flex-col py-4 px-4">
+      <div className="w-full">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
           >
-            <Plus className="h-4 w-4" />
-            Add Data Field
-          </Button>
-        </div>
+            <div className="flex flex-col border-b pb-4 mb-4">
+              <Button
+                type="button"
+                onClick={handleAddDataField}
+                className="self-start"
+              >
+                <Plus className="h-4 w-4" />
+                Add Data Field
+              </Button>
+            </div>
 
-        {fields.length === 0 && (
-          <p className="text-center text-gray-500">
-            Click "Add Data Field" to define a new column.
-          </p>
-        )}
+            {fields.length === 0 && (
+              <p className="text-center text-gray-500">
+                Click "Add Data Field" to define a new column.
+              </p>
+            )}
 
-        {fields.map((field, index: number) => (
-          <DataFieldRow
-            key={field.id}
-            operationIndex={index}
-            onRemove={() => remove(index)}
-            availableColumns={availableColumns}
-            operationOptions={commonOperationOptions}
-          />
-        ))}
+            {fields.map((field, index: number) => (
+              <DataFieldRow
+                key={field.id}
+                operationIndex={index}
+                onRemove={() => remove(index)}
+                availableColumns={availableColumns}
+                operationOptions={commonOperationOptions}
+              />
+            ))}
 
-        {fields.length > 0 && (
-          <div className="flex justify-end gap-2 pt-4 border-t mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-            >
-              Reset
-            </Button>
-            <Button type="submit">Submit</Button>
-          </div>
-        )}
-      </form>
-    </Form>
+            {fields.length > 0 && (
+              <div className="flex justify-end gap-2 pt-4 border-t mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                >
+                  Reset
+                </Button>
+                <Button type="submit">Submit</Button>
+              </div>
+            )}
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }
