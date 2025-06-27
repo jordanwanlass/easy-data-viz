@@ -1,5 +1,7 @@
+import { XCircle } from "lucide-react";
 import { useDataSetStore } from "../store/store";
 import { ColumnData, RowData } from "../types/types";
+import { Button } from "./ui/button";
 import {
   Table,
   TableBody,
@@ -18,7 +20,19 @@ export default function DataSetTable() {
         <TableRow>
           {columnData.map((column: ColumnData, index: number) => (
             <TableHead key={`header-${column.name}-${index}`}>
+              <div className="flex items-center gap-2">
               {column.name}
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => console.log("hello")}
+                className="h-4 w-4 rounded-full cursor-pointer"
+              >
+                <XCircle className="h-4 w-4" />
+                <span className="sr-only">Remove ETL Operation</span>
+              </Button>
+              </div>
             </TableHead>
           ))}
         </TableRow>
