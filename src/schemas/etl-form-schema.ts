@@ -1,6 +1,6 @@
 // schemas/etlFormSchema.ts
 import { z } from "zod";
-import { DisplayFormat, OperationType } from "../types/types"; // Assuming ColumnType enum
+import { DisplayFormat, OperationType } from "~/types/data-types"; // Assuming ColumnType enum
 
 // Schema for a single source column selection within an operation
 export const singleSourceColumnSchema = z.object({

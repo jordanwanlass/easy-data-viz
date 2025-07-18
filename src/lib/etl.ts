@@ -1,11 +1,11 @@
-import { DataFieldRowSchema } from "../schemas/etlFormSchema";
+import { DataFieldRowSchema } from "../schemas/etl-form-schema";
 import {
   ColumnData,
   DataType,
   DisplayFormat,
   OperationType,
   RowData,
-} from "../types/types";
+} from "~/types/data-types";
 import { inferDataTypeAndFormat, castValueToType } from "../lib/helpers";
 import * as math from "mathjs";
 

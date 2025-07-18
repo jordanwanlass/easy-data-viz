@@ -1,24 +1,24 @@
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
-import CreateDataSet from "./components/createDataSet";
-import AnalyzeDataSet from "./components/analyzeDataSet";
+import CreateDataSet from "~/components/create-data-set";
+import AnalyzeDataSet from "~/components/analyze-data-set";
 import { SquareStack, Upload, ChartColumnBig, List } from "lucide-react";
-import DataSets from "./components/dataSets";
-import { ETLForm } from "./components/etlForm";
+import DataSets from "~/components/data-sets";
+import { ETLForm } from "~/components/etl-form";
 
 const links = [
   {
     name: "Create Data Set",
-    to: "/createDataset",
+    to: "/create-data-set",
     icon: <Upload className="h-4 w-4" />,
   },
   {
     name: "Analyze Data Set",
-    to: "/analyzeDataSet",
+    to: "/analyze-data-set",
     icon: <ChartColumnBig className="h-4 w-4" />,
   },
   {
     name: "Data Sets",
-    to: "/dataSets",
+    to: "/data-sets",
     icon: <List className="h-4 w-4" />,
   },
 ];
@@ -55,9 +55,9 @@ export default function Page() {
         >
           <Routes>
             <Route path="/" element={<CreateDataSet />} />
-            <Route path="/createDataSet" element={<CreateDataSet />} />
-            <Route path="/analyzeDataSet" element={<AnalyzeDataSet />} />
-            <Route path="/dataSets" element={<DataSets />} />
+            <Route path="/create-data-set" element={<CreateDataSet />} />
+            <Route path="/analyze-data-set" element={<AnalyzeDataSet />} />
+            <Route path="/data-sets" element={<DataSets />} />
             <Route path="/etl" element={<ETLForm />} />
           </Routes>
         </div>

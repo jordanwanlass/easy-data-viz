@@ -41,4 +41,10 @@ type DataSetState = {
   error: string | null;
 };
 
-export { DataType, OperationType, RowData, ColumnData, DataSetState };
+interface DataSet {
+  tableName: string,
+  columnData: ColumnData[],
+  data: RowData[]
+}
+
+export { DataType, OperationType, RowData, ColumnData, DataSetState, DataSet };

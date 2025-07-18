@@ -1,14 +1,15 @@
-import { Input } from "./ui/input";
+import { Input } from "~/components/ui/input";
 import parse from "papaparse";
-import DataSetTable from "./dataSetTable";
+import DataSetTable from "~/components/data-set-table";
 
-import { useDataSetStore } from "../store/store";
-import { Button } from "./ui/button";
+import { useDataSetStore, DataSetStoreActions } from "~/store/store";
+import { DataSetState } from "~/types/data-types"
+import { Button } from "~/components/ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 
 export default function CreateDataSet() {
-  const { data, loadCsvData } = useDataSetStore((state) => state);
+  const { data, loadCsvData } = useDataSetStore((state: DataSetState & DataSetStoreActions) => state);
 
   const handFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputedFile = event.target.files?.[0];

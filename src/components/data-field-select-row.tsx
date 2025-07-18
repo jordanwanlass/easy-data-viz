@@ -9,7 +9,7 @@ import {
 } from "./ui/select";
 import { Button } from "./ui/button";
 import { XCircle } from "lucide-react";
-import { ColumnData } from "../types/types";
+import { ColumnData } from "~/types/data-types";
 
 interface DataFieldSelectRowProps {
   operationIndex: number;

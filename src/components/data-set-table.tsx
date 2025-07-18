@@ -1,6 +1,6 @@
 import { XCircle } from "lucide-react";
 import { useDataSetStore } from "../store/store";
-import { ColumnData, RowData } from "../types/types";
+import { ColumnData, RowData } from "~/types/data-types";
 import { Button } from "./ui/button";
 import {
   Table,

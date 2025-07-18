@@ -1,5 +1,5 @@
 import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
-import { ColumnData, DataType, DisplayFormat, OperationType } from "../types/types";
+import { ColumnData, DataType, DisplayFormat, OperationType } from "~/types/data-types";
 import {
   FormField,
   FormItem,
@@ -18,7 +18,7 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { XCircle, PlusCircle } from "lucide-react";
-import { DataFieldSelectRow } from "./dataFieldSelectRow";
+import { DataFieldSelectRow } from "./data-field-select-row";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect } from "react";
 

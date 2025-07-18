@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { RowData, DataSetState, ColumnData, DataType, DisplayFormat } from "../types/types";
-import { inferDataTypeAndFormat, castValueToType } from "../lib/helpers";
+import { RowData, DataSetState, ColumnData, DataType, DisplayFormat } from "~/types/data-types";
+import { inferDataTypeAndFormat, castValueToType } from "~/lib/helpers";
 
-interface DataSetStoreActions {
+export interface DataSetStoreActions {
   loadCsvData: (fileName: string, parsedData: RowData[]) => void;
   addColumn: (
     newColumnData: ColumnData,
@@ -26,7 +26,7 @@ const initialState: DataSetState = {
   error: null,
 };
 
-export const useDataSetStore = create<DataSetState & DataSetStoreActions>()( // Renamed types here
+export const useDataSetStore = create<DataSetState & DataSetStoreActions>()(
   immer((set, get) => ({
     ...initialState,
 

@@ -1,13 +1,13 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
-import { etlFormSchema, EtlFormValues } from "../schemas/etlFormSchema";
-import { DataType, DisplayFormat, OperationType } from "../types/types";
+import { etlFormSchema, EtlFormValues } from "../schemas/etl-form-schema";
+import { DataType, DisplayFormat, OperationType } from "~/types/data-types";
 import { useDataSetStore } from "../store/store";
 
 import { Form } from "./ui/form";
 import { Button } from "./ui/button";
-import { DataFieldRow } from "./dataFieldRow";
+import { DataFieldRow } from "./data-field-row";
 import { Plus } from "lucide-react";
 import { performComplexETL } from "../lib/etl";
 import { useNavigate } from "react-router-dom";
@@ -160,7 +160,7 @@ export function ETLForm() {
           .filter(Boolean) as string[]
       );
     });
-    navigate("/createDataSet");
+    navigate("/create-data-set");
   };
 
   return (

@@ -1,4 +1,4 @@
-import { DataType, DisplayFormat } from "../types/types";
+import { DataType, DisplayFormat } from "~/types/data-types";
 
 const usDollarRegex = /^\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?$|^\$?\d+(?:\.\d{2})?$/;
 
